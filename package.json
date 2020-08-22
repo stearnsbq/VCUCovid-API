@@ -1,0 +1,32 @@
+{
+  "name": "vcu-covid-scrape-api",
+  "version": "1.0.0",
+  "description": "Scrapes video covid 19 dashboard for display in a concise graph over time app and notifications",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "node -r dotenv/config .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "covid",
+    "19",
+    "vcu",
+    "app",
+    "graph"
+  ],
+  "author": "quinn50",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.1.3",
+    "helmet": "^4.1.0",
+    "jssoup": "0.0.12",
+    "moment": "^2.27.0",
+    "mongoose": "^5.10.0",
+    "node-schedule": "^1.3.2"
+  }
+}
