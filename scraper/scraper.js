@@ -28,7 +28,9 @@ module.exports = async function(models) {
 
 	const last_update = general.nextElement.nextSibling;
 
-	const date = Date.parse(last_update.text.replace(/["'()]/g, '').split('updated')[1].trim()); // parse the last updated date
+	const date = new Date(Date.parse(last_update.text.replace(/["'()]/g, '').split('updated')[1].trim())); // parse the last updated date
+
+	date.setHours(0, 0, 0, 0);
 
 	const wrapper = soup.find('div', 'gridwrapper');
 
