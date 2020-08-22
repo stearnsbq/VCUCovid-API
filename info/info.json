@@ -1,0 +1,6 @@
+  
+{
+    "description": "A Web Scraper and REST API that scrapes https://together.vcu.edu/dashboard/ for current VCU COVID-19 data and provides a history of the data for use on my VCUCovid Website",
+    "accomplishments": ["Implemented a Web scraping scheme to access data without a public API", "Implemented a REST API to provide said data", "Stored data in a mongoDB instance"],
+    "technologies": ["nodeJS", "REST APIs", "Web Scraping"]
+  }
