@@ -20,7 +20,7 @@ module.exports = async function(models) {
 
 	const request = await axios.get('https://together.vcu.edu/dashboard/'); // grab the html from the dashboard site
 
-	const html = request.data;
+	const html = request.data
 
 	const soup = new jssoup(html);
 
@@ -30,11 +30,11 @@ module.exports = async function(models) {
 
 	const date = new Date(Date.parse(last_update.text.replace(/["'()]/g, '').split('updated')[1].trim())); // parse the last updated date
 
-	date.setHours(0, 0, 0, 0);
+	const date_str = moment(date).format('YYYY-MM-DD');
 
 	const wrapper = soup.find('div', 'gridwrapper');
 
-	fs.writeFileSync(`${__dirname}/history/${moment(date).format('DD-MM-YYYY')}.html`, wrapper); // save a history html file
+	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, wrapper); // save a history html file
 
 	const headers = wrapper.findAll('div', 'gridheader');
 
@@ -59,18 +59,18 @@ module.exports = async function(models) {
 				switch (text[0]) {
 					case 'Residential': {
 						const type = text[4];
-						await create(models[type + 'Model'], date, count);
+						await create(models[type + 'Model'], date_str, count);
 						break;
 					}
 					case 'Positive':
 					case 'Negative': {
                         const type = text[0].toLowerCase();
-						await create(models[type + 'Model'], date, count);
+						await create(models[type + 'Model'], date_str, count);
 						break;
 					}
 					case 'Active': {
                         const type = text[1];
-						await create(models[type + 'Model'], date, count);
+						await create(models[type + 'Model'], date_str, count);
 						break;
 					}
 				}

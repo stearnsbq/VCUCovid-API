@@ -4,11 +4,10 @@ module.exports = function() {
 	const schema = new Schema({
 		value: { type: Number, default: 0 },
 		date: {
-			type: Date,
+			type: String,
 			default: () => {
 				const d = new Date();
-				d.setHours(0, 0, 0, 0);
-				return d;
+				return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 			},
 			unique: true
 		}

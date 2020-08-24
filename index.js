@@ -48,12 +48,12 @@ db.on('open', console.log.bind(console, 'Connected to MongoDB instance'));
 
 app.get(api_ver, async (req, res) => {
 	const select = '-_id date value';
-	const positives = await positiveModel.find({}, select).sort({ type: 'desc' }).exec();
-	const negatives = await negativeModel.find({}, select).sort({ type: 'desc' }).exec();
-	const isolations = await isolationModel.find({}, select).sort({ type: 'desc' }).exec();
-	const quarantines = await quarantineModel.find({}, select).sort({ type: 'desc' }).exec();
-	const students = await studentModel.find({}, select).sort({ type: 'desc' }).exec();
-	const employees = await employeeModel.find({}, select).sort({ type: 'desc' }).exec();
+	const positives = await positiveModel.find({}, select).sort({ date: -1 }).exec();
+	const negatives = await negativeModel.find({}, select).sort({ date: -1 }).exec();
+	const isolations = await isolationModel.find({}, select).sort({ date: -1 }).exec();
+	const quarantines = await quarantineModel.find({}, select).sort({ date: -1 }).exec();
+	const students = await studentModel.find({}, select).sort({ date: -1 }).exec();
+	const employees = await employeeModel.find({}, select).sort({ date: -1 }).exec();
 
 	res.send({ positives, negatives, isolations, quarantines, students, employees });
 });

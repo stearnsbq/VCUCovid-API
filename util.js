@@ -12,6 +12,9 @@ module.exports = {
     },
     async exists(model, fields){
         return !!await model.findOne(fields, '_id').lean()
+    },
+    growthFactor(data){
+        return (data[0].value / data[1].value).toFixed(2);
     }
 
 
