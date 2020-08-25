@@ -15,7 +15,15 @@ module.exports = {
     },
     growthFactor(data){
         return (data[0].value / data[1].value).toFixed(2);
-    }
+    },
+    async create(model, date, value) {
+		const entry = new model();
+		if (!await this.exists(model, { date })) {
+			entry.value = value;
+			entry.date = date;
+			await entry.save();
+		}
+	}
 
 
 
