@@ -41,16 +41,18 @@ module.exports = async function(models) {
 	// loop through grid headers to save needed information
 
 	for (const header of headers) {
-		if (header.getText() === 'Prevalence') {
-			continue;
-		}
 
 		const body = header.findNextSibling('div');
 
-		const ul = body.find('ul');
+		let ul = body.find('ul');
+
+		if(header.getText() === 'Prevalence'){
+			ul.contents = ul.contents.slice(2, 3);
+		}
 
 		for (const li of ul.contents) {
 			try {
+
 				const text = li.getText().replace(/&nbsp;/g, ' ').trim().split(' '); // remove no break spaces, trim and split into tokens
 
 				const count = parseInt(text[text.length - 1].replace(/,/g, '')); // get count from each statistic
@@ -64,8 +66,11 @@ module.exports = async function(models) {
 					}
 					case 'Positive':
 					case 'Negative': {
-                        const type = text[0].toLowerCase();
-						await create(models[type + 'Model'], date_str, count);
+						if(header.getText() === 'Prevalence'){
+							await create(models[header.getText().toLowerCase() + text[0] + 'Model'], date_str, count);
+						}else{
+							await create(models[text[0].toLowerCase() + 'Model'], date_str, count);
+						}
 						break;
 					}
 					case 'Active': {
@@ -74,7 +79,10 @@ module.exports = async function(models) {
 						break;
 					}
 				}
+
+
 			} catch (err) {
+				console.log(err)
 				continue;
 			}
 		}

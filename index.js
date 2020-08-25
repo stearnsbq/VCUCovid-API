@@ -14,10 +14,12 @@ const positiveModel = require(`${model_path}/positive_test`)();
 const negativeModel = require(`${model_path}/negative_test`)();
 const isolationModel = require(`${model_path}/isolation`)();
 const quarantineModel = require(`${model_path}/quarantine`)();
+const prevalencePositiveModel = require(`${model_path}/prevalence_positive`)();
+const prevalenceNegativeModel = require(`${model_path}/prevalence_negative`)();
 const config = require('./config/config')
 
 
-const models = { positiveModel, negativeModel, isolationModel, quarantineModel, studentModel, employeeModel };
+const models = { positiveModel, negativeModel, isolationModel, quarantineModel, studentModel, employeeModel, prevalencePositiveModel, prevalenceNegativeModel };
 
 const cases = require('./cases')({ studentModel, employeeModel });
 const quarantine = require('./quarantine')({ isolationModel, quarantineModel });
@@ -54,8 +56,10 @@ app.get(api_ver, async (req, res) => {
 	const quarantines = await quarantineModel.find({}, select).sort({ date: -1 }).exec();
 	const students = await studentModel.find({}, select).sort({ date: -1 }).exec();
 	const employees = await employeeModel.find({}, select).sort({ date: -1 }).exec();
+	const prevalenceNegative = await prevalenceNegativeModel.find({}, select).sort({date: -1}).exec();
+	const prevalencePositive = await prevalencePositiveModel.find({}, select).sort({date: -1}).exec();
 
-	res.send({ positives, negatives, isolations, quarantines, students, employees });
+	res.send({ positives, negatives, isolations, quarantines, students, employees, prevalenceNegative, prevalencePositive });
 });
 
 scraper(models);
