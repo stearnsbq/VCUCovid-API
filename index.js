@@ -68,7 +68,7 @@ app.get(api_ver, async (req, res) => {
 
 scraper(models);
 
-const job = schedule.scheduleJob('0 10-15 * * *', () => {
+const job = schedule.scheduleJob('0 * * * *', () => {
 	console.log(`[${new Date().toISOString()}] Running Scraper`);
 	scraper(models);
 });
