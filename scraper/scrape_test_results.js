@@ -5,7 +5,7 @@ module.exports = function (model, ul, date) {
 	for (const li of contents) {
         const strong = li.find('strong');
 		const type = li.getText().replace(/&nbsp;/g, ' ').split(' ')[0];
-        const count = parseInt(strong.text);
+        const count = parseInt(strong.text.replace(',', ''));
 		util.create(model[type.toLowerCase() + 'Model'], date, count);
 	}
 }
