@@ -52,16 +52,16 @@ db.on('open', console.log.bind(console, 'Connected to MongoDB instance'));
 
 app.get(api_ver, async (req, res) => {
 	const select = '-_id date value';
-	const positives = await positiveModel.find({}, select).sort({ date: -1 }).exec();
-	const negatives = await negativeModel.find({}, select).sort({ date: -1 }).exec();
-	const isolations = await isolationModel.find({}, select).sort({ date: -1 }).exec();
-	const quarantines = await quarantineModel.find({}, select).sort({ date: -1 }).exec();
-	const students = await studentModel.find({}, select).sort({ date: -1 }).exec();
-	const employees = await employeeModel.find({}, select).sort({ date: -1 }).exec();
-	const prevalenceNegative = await prevalenceNegativeModel.find({}, select).sort({date: -1}).exec();
-	const prevalencePositive = await prevalencePositiveModel.find({}, select).sort({date: -1}).exec();
-	const totalStudents = await totalStudentModel.find({}, select).sort({date: -1}).exec();
-	const totalEmployees = await totalEmployeeModel.find({}, select).sort({date: -1}).exec();
+	const positives = await positiveModel.find({}, select).sort({ date: 1 }).exec();
+	const negatives = await negativeModel.find({}, select).sort({ date: 1 }).exec();
+	const isolations = await isolationModel.find({}, select).sort({ date: 1 }).exec();
+	const quarantines = await quarantineModel.find({}, select).sort({ date: 1 }).exec();
+	const students = await studentModel.find({}, select).sort({ date: 1 }).exec();
+	const employees = await employeeModel.find({}, select).sort({ date: 1 }).exec();
+	const prevalenceNegative = await prevalenceNegativeModel.find({}, select).sort({date: 1}).exec();
+	const prevalencePositive = await prevalencePositiveModel.find({}, select).sort({date: 1}).exec();
+	const totalStudents = await totalStudentModel.find({}, select).sort({date: 1}).exec();
+	const totalEmployees = await totalEmployeeModel.find({}, select).sort({date: 1}).exec();
 
 	res.send({ positives, negatives, isolations, quarantines, students, employees, prevalenceNegative, prevalencePositive, totalStudents, totalEmployees });
 });
