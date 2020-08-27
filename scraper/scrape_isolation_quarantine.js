@@ -6,7 +6,8 @@ module.exports = function (model, ul, date) {
 	for (const li of contents.slice(0, 2)) {
         const strong = li.find('strong');
 		const type = li.getText().replace(/&nbsp;/g, ' ').split(' ')[4];
-        const count = parseInt(strong.text);
+		const count = parseInt(strong.text);
+		console.log(count)
 		util.create(model[type + 'Model'], date, count);
 	}
 

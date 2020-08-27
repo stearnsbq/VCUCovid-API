@@ -49,7 +49,7 @@ module.exports = async function(models) {
 					);
 					break;
 				}
-				case 'On-campus isolation and quarantine': {
+				case 'On-campus isolation and quarantine*': {
 					isolation_quarantines(
 						{ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel },
 						ul,
