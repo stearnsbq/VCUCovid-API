@@ -18,21 +18,51 @@ const prevalencePositiveModel = require(`${model_path}/prevalence_positive`)();
 const prevalenceNegativeModel = require(`${model_path}/prevalence_negative`)();
 const totalStudentModel = require(`${model_path}/students`)();
 const totalEmployeeModel = require(`${model_path}/employees`)();
-const config = require('./config/config')
+const config = require('./config/config');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+let options = {
+    swaggerDefinition: {
+        info: {
+			title: 'VCUCOVID API',
+            description: 'test',
+			version: '1.0.0',
+			servers: ["projects.quinn50.dev", "localhost:8084"],
+			tags: ['dome']
+        },
+	},
+	swagger: "2.0",
+    basedir: __dirname, //app absolute path
+	apis: ['./routes/**/*.js', 'index.js'] //Path to the API handle folder
+};
 
 
-const models = { positiveModel, negativeModel, isolationModel, quarantineModel, studentModel, employeeModel, prevalencePositiveModel, prevalenceNegativeModel, totalStudentModel, totalEmployeeModel };
 
-const cases = require('./cases')({ studentModel, employeeModel });
-const quarantine = require('./quarantine')({ isolationModel, quarantineModel });
-const tests = require('./tests')({ positiveModel, negativeModel });
+
+const models = {
+	positiveModel,
+	negativeModel,
+	isolationModel,
+	quarantineModel,
+	studentModel,
+	employeeModel,
+	prevalencePositiveModel,
+	prevalenceNegativeModel,
+	totalStudentModel,
+	totalEmployeeModel
+};
+
+const cases = require('./routes/cases')({ studentModel, employeeModel });
+const quarantine = require('./routes/quarantine')({ isolationModel, quarantineModel });
+const tests = require('./routes/tests')({ positiveModel, negativeModel });
 
 const limiter = rateLimit({
 	windowMs: 5 * 60 * 1000,
 	max: 100
 });
 
-const api_ver = '/api/v1/'
+const api_ver = '/api/v1/';
 
 app.use(limiter);
 app.use(cors({}));
@@ -42,6 +72,10 @@ app.use(`${api_ver}cases`, cases);
 app.use(`${api_ver}residential`, quarantine);
 app.use(`${api_ver}tests`, tests);
 
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 mongoose.connect(config.MONGODB_URL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
@@ -49,6 +83,21 @@ mongoose.connect(config.MONGODB_URL, {
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('open', console.log.bind(console, 'Connected to MongoDB instance'));
+
+
+
+/**
+ * @swagger
+ *
+ * /api/v1:
+ *   get:
+ *     description: Get all of the data
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: all of the cases, tests, quarantines/isolations
+ */
 
 app.get(api_ver, async (req, res) => {
 	const select = '-_id date value';
@@ -58,12 +107,19 @@ app.get(api_ver, async (req, res) => {
 	const quarantines = await quarantineModel.find({}, select).sort({ date: 1 }).exec();
 	const students = await studentModel.find({}, select).sort({ date: 1 }).exec();
 	const employees = await employeeModel.find({}, select).sort({ date: 1 }).exec();
-	const prevalenceNegative = await prevalenceNegativeModel.find({}, select).sort({date: 1}).exec();
-	const prevalencePositive = await prevalencePositiveModel.find({}, select).sort({date: 1}).exec();
-	const totalStudents = await totalStudentModel.find({}, select).sort({date: 1}).exec();
-	const totalEmployees = await totalEmployeeModel.find({}, select).sort({date: 1}).exec();
+	const prevalenceNegative = await prevalenceNegativeModel.find({}, select).sort({ date: 1 }).exec();
+	const prevalencePositive = await prevalencePositiveModel.find({}, select).sort({ date: 1 }).exec();
 
-	res.send({ positives, negatives, isolations, quarantines, students, employees, prevalenceNegative, prevalencePositive, totalStudents, totalEmployees });
+	res.send({
+		positives,
+		negatives,
+		isolations,
+		quarantines,
+		students,
+		employees,
+		prevalenceNegative,
+		prevalencePositive
+	});
 });
 
 scraper(models);
@@ -80,3 +136,7 @@ app.listen(config.PORT, () => {
 process.on('exit', function() {
 	job.cancel();
 });
+
+
+
+

@@ -10,7 +10,6 @@ const test_results = require('./scrape_test_results');
 
 module.exports = async function(models) {
 	const moment = require('moment');
-	const util = require('../util');
 
 	const request = await axios.get('https://together.vcu.edu/dashboard/'); // grab the html from the dashboard site
 
