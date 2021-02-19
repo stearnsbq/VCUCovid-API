@@ -3,8 +3,9 @@ const axios = require('axios');
 const fs = require('fs');
 const active_cases = require('./scrape_active_case');
 const isolation_quarantines = require('./scrape_isolation_quarantine');
-const prevalence = require('./scrape_prevalence');
-const test_results = require('./scrape_test_results');
+const scrape_entry_tests = require('./scrape_entry_tests');
+const scrape_asympomatic_tests = require('./scrape_asympomatic_tests');
+const scrape_sympomatic_tests = require('./scrape_sympomatic_tests');
 
 // basic scraper file to grab new cases / isolations / qurantines / positive tests / negative tests
 
@@ -21,13 +22,13 @@ module.exports = async function(models) {
 
 	const last_update = general.nextElement.nextSibling;
 
-	const date = new Date(Date.parse(last_update.text.replace(/["'()]/g, '').split('updated')[1].trim())); // parse the last updated date
+	const date = new Date(Date.parse(last_update.text.replace(/["'()]/g, '').replace(/&nbsp;/gi, '').split('updated')[1].trim())); // parse the last updated date
 
 	const date_str = moment(date).format('YYYY-MM-DD');
 
 	const wrapper = soup.find('div', 'gridwrapper');
 
-	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, wrapper); // save a history html file
+	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup); // save a history html file
 
 	const headers = wrapper.findAll('div', 'gridheader');
 
@@ -38,47 +39,51 @@ module.exports = async function(models) {
 
 		let ul = body.find('ul');
 
+
+
+
 		try {
-			switch (header.getText().replace(/&nbsp;/g, '')) {
+			switch (header.getText().replace(/&nbsp;/g, ' ')) {
 				case 'Active cases': {
 					active_cases(
-						{ studentModel: models.studentModel, employeeModel: models.employeeModel, totalStudentModel: models.totalStudentModel, totalEmployeeModel: models.totalEmployeeModel },
+						{ studentModel: models.studentModel, employeeModel: models.employeeModel },
 						ul,
 						date_str
 					);
 					break;
 				}
-				case 'On-campus isolation and quarantine*': {
-					isolation_quarantines(
-						{ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel },
-						ul,
-						date_str
-					);
+				case 'Symptomatic testing':{
+					scrape_sympomatic_tests({symptomaticPositiveModel: models.symptomaticPositiveModel, symptomaticNegativeModel: models.symptomaticNegativeModel}, ul, date_str)
+					break
+				}
+				case 'Asymptomatic surveillance testing':{
+					scrape_asympomatic_tests({asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel}, ul, date_str)
+					break
+				}
+				case 'Entry testing':{
+					scrape_entry_tests({entryTestPositiveModel: models.entryTestPositiveModel, entryTestNegativeModel: models.entryTestNegativeModel}, ul, date_str)
 					break;
 				}
-				case 'Prevalence': {
-					prevalence(
-						{
-							prevalencePositiveModel: models.prevalencePositiveModel,
-							prevalenceNegativeModel: models.prevalenceNegativeModel
-						},
-						ul,
-						date_str
-					);
-					break;
-				}
-				case 'Entry test results': {
-					test_results(
-						{ positiveModel: models.positiveModel, negativeModel: models.negativeModel },
-						ul,
-						date_str
-					);
-					break;
-				}
+
 			}
 		} catch (err) {
 			console.log(err)
 			continue;
 		}
 	}
+
+	// because isolation and quarantines are seperate now we gotta do this
+
+	const isolationAndQuarantineHeader = wrapper.nextSibling;
+	const isolationAndQuarantineBody = isolationAndQuarantineHeader.nextElement;
+
+	isolation_quarantines(
+			{ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel },
+			isolationAndQuarantineBody.nextElement.contents[0],
+			date_str
+	);
+
+
+
+
 };

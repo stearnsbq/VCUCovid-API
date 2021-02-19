@@ -24,5 +24,31 @@ module.exports = {
 			entry.date = date;
 			await entry.save();
 		}
+	},
+	filter(filter){
+		const today = new Date();
+		switch (filter){
+			case '1W':{
+				today.setDate(today.getDate() - 7);
+				break
+			}
+			case "1M":{
+				today.setMonth(today.getMonth() - 1);
+				break
+			}
+			case "3M":{
+				today.setMonth(today.getMonth() - 3);
+				break
+			}
+			case "1Y":{
+				today.setFullYear(today.getFullYear() - 1);
+				break
+			}
+			default:{
+				return {}
+			}
+		}
+
+		return {date: {$gte: today}}
 	}
 };

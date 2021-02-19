@@ -6,21 +6,24 @@ module.exports = function(models) {
     const {isolationModel, quarantineModel} = models;
 
     router.get('/', async (req, res) => {
-        const isolations = await isolationModel.find({}, '-_id value date').sort({date: 'desc'}).exec();
-        const quarantines = await quarantineModel.find({}, '-_id value date').sort({date: 'desc'}).exec();
+        const filter = util.filter(req.params.filter)
+        const isolations = await isolationModel.find(filter, '-_id value date').sort({date: 'desc'}).exec();
+        const quarantines = await quarantineModel.find(filter, '-_id value date').sort({date: 'desc'}).exec();
 		res.send({isolations, quarantines});
     });
 
 
 	// get day by day history count of residential isolation
 	router.get('/isolations', async (req, res) => {
-        const docs = await isolationModel.find({}, '-_id value date').sort({date: 'desc'}).exec();
+        const filter = util.filter(req.params.filter)
+        const docs = await isolationModel.find(filter, '-_id value date').sort({date: 'desc'}).exec();
 		res.send(docs);
     });
 
 	// get day by day history count of residential quarantine
 	router.get('/quarantines', async (req, res) => {
-		const docs = await quarantineModel.find({}, '-_id value date').sort({date: 'desc'}).exec();
+        const filter = util.filter(req.params.filter)
+		const docs = await quarantineModel.find(filter, '-_id value date').sort({date: 'desc'}).exec();
 		res.send(docs);
 	});
 

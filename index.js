@@ -7,20 +7,10 @@ const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
 const scraper = require('./scraper/scraper');
-const model_path = './model';
-const studentModel = require(`${model_path}/student_case`)();
-const employeeModel = require(`${model_path}/employee_case`)();
-const positiveModel = require(`${model_path}/positive_test`)();
-const negativeModel = require(`${model_path}/negative_test`)();
-const isolationModel = require(`${model_path}/isolation`)();
-const quarantineModel = require(`${model_path}/quarantine`)();
-const prevalencePositiveModel = require(`${model_path}/prevalence_positive`)();
-const prevalenceNegativeModel = require(`${model_path}/prevalence_negative`)();
-const totalStudentModel = require(`${model_path}/students`)();
-const totalEmployeeModel = require(`${model_path}/employees`)();
 const config = require('./config/config');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
+const chartSchema = require('./model/abstract-chart-schema')
 
 let options = {
     swaggerDefinition: {
@@ -41,21 +31,21 @@ let options = {
 
 
 const models = {
-	positiveModel,
-	negativeModel,
-	isolationModel,
-	quarantineModel,
-	studentModel,
-	employeeModel,
-	prevalencePositiveModel,
-	prevalenceNegativeModel,
-	totalStudentModel,
-	totalEmployeeModel
+	isolationModel: mongoose.model('isolation', new chartSchema()),
+	quarantineModel: mongoose.model('quarantine', new chartSchema()),
+	studentModel: mongoose.model('studentCase', new chartSchema()),
+	employeeModel: mongoose.model('employeeCase', new chartSchema()),
+	symptomaticPositiveModel: mongoose.model('symptomaticPositive', new chartSchema()),
+	symptomaticNegativeModel: mongoose.model('symptomaticNegative', new chartSchema()),
+	asymptomaticPositiveModel: mongoose.model('asymptomaticPositive', new chartSchema()),
+	asymptomaticNegativeModel: mongoose.model('asymptomaticNegative', new chartSchema()),
+	entryTestPositiveModel: mongoose.model('entryTestPositive', new chartSchema()),
+	entryTestNegativeModel: mongoose.model('entryTestNegative', new chartSchema()),
 };
 
-const cases = require('./routes/cases')({ studentModel, employeeModel });
-const quarantine = require('./routes/quarantine')({ isolationModel, quarantineModel });
-const tests = require('./routes/tests')({ positiveModel, negativeModel });
+const cases = require('./routes/cases')({ studentModel: models.studentModel, employeeModel: models.employeeModel });
+const quarantine = require('./routes/quarantine')({ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel });
+const tests = require('./routes/tests')({ entryTestPositiveModel: models.entryTestPositiveModel, entryTestNegativeModel: models.entryTestNegativeModel, symptomaticPositiveModel: models.symptomaticPositiveModel, symptomaticNegativeModel: models.symptomaticNegativeModel, asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel   });
 
 const limiter = rateLimit({
 	windowMs: 5 * 60 * 1000,

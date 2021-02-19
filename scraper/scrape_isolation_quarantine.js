@@ -9,3 +9,4 @@ module.exports = function(model, ul, date) {
 		util.create(model[type + 'Model'], date, count);
 	}
 };
+ 
