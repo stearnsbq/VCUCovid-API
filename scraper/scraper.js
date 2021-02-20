@@ -18,9 +18,13 @@ module.exports = async function(models) {
 
 	const soup = new jssoup(html);
 
-	const today = new Date(); // today's date
+	const general = soup.find('div', 'plugin-general-content');
 
-	const date_str = moment(today).format('YYYY-MM-DD');
+	const last_update = general.nextElement.nextSibling;
+
+	const date = new Date(Date.parse(last_update.text.replace(/["'()]/g, '').replace(/&nbsp;/gi, '').split('updated')[1].trim())); // parse the last updated date
+
+	const date_str = moment(date).format('YYYY-MM-DD');
 
 	const wrapper = soup.find('div', 'gridwrapper');
 
