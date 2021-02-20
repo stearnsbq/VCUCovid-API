@@ -87,16 +87,16 @@ app.get(`${api_ver}lastUpdated`, async (req, res) => {
 
 app.get(`${api_ver}totals`, async (req, res) => {
 	const select = '-_id value';
-	const isolations = await models.isolationModel.findOne({}, select).sort({ date: 1 }).exec();
-	const quarantines = await models.quarantineModel.findOne({}, select).sort({ date: 1 }).exec();
-	const students = await models.studentModel.findOne({}, select).sort({ date: 1 }).exec();
-	const employees = await models.employeeModel.findOne({}, select).sort({ date: 1 }).exec();
-	const symptomaticPositives = await models.symptomaticPositiveModel.findOne({}, select).sort({ date: 1 }).exec();
-	const symptomaticNegatives = await models.symptomaticNegativeModel.findOne({}, select).sort({ date: 1 }).exec();
-	const asymptomaticPositives = await models.asymptomaticPositiveModel.findOne({}, select).sort({ date: 1 }).exec();
-	const asymptomaticNegatives = await models.asymptomaticNegativeModel.findOne({}, select).sort({ date: 1 }).exec();
-	const entryTestPositives = await models.entryTestPositiveModel.findOne({}, select).sort({ date: 1 }).exec();
-	const entryTestNegatives = await models.entryTestNegativeModel.findOne({}, select).sort({ date: 1 }).exec();
+	const isolations = await models.isolationModel.findOne({}, select).sort({ date: -1 }).exec();
+	const quarantines = await models.quarantineModel.findOne({}, select).sort({ date: -1 }).exec();
+	const students = await models.studentModel.findOne({}, select).sort({ date: -1 }).exec();
+	const employees = await models.employeeModel.findOne({}, select).sort({ date: -1 }).exec();
+	const symptomaticPositives = await models.symptomaticPositiveModel.findOne({}, select).sort({ date: -1 }).exec();
+	const symptomaticNegatives = await models.symptomaticNegativeModel.findOne({}, select).sort({ date: -1 }).exec();
+	const asymptomaticPositives = await models.asymptomaticPositiveModel.findOne({}, select).sort({ date: -1 }).exec();
+	const asymptomaticNegatives = await models.asymptomaticNegativeModel.findOne({}, select).sort({ date: -1 }).exec();
+	const entryTestPositives = await models.entryTestPositiveModel.findOne({}, select).sort({ date: -1 }).exec();
+	const entryTestNegatives = await models.entryTestNegativeModel.findOne({}, select).sort({ date: -1 }).exec();
 
 
 
