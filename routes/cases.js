@@ -26,7 +26,7 @@ module.exports = function(models) {
 		const students = await studentModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const employees = await employeeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
-		res.send({ students, employees });
+		res.send({ success: true, message: "Student and Employee Cases Retrieved", data: [ students, employees ]});
 	});
 
 

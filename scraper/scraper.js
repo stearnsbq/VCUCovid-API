@@ -18,13 +18,9 @@ module.exports = async function(models) {
 
 	const soup = new jssoup(html);
 
-	const general = soup.find('div', 'plugin-general-content');
+	const today = new Date(); // today's date
 
-	const last_update = general.nextElement.nextSibling;
-
-	const date = new Date(Date.parse(last_update.text.replace(/["'()]/g, '').replace(/&nbsp;/gi, '').split('updated')[1].trim())); // parse the last updated date
-
-	const date_str = moment(date).format('YYYY-MM-DD');
+	const date_str = moment(today).format('YYYY-MM-DD');
 
 	const wrapper = soup.find('div', 'gridwrapper');
 
@@ -38,8 +34,6 @@ module.exports = async function(models) {
 		const body = header.findNextSibling('div');
 
 		let ul = body.find('ul');
-
-
 
 
 		try {

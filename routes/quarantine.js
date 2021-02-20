@@ -7,9 +7,11 @@ module.exports = function(models) {
 
     router.get('/', async (req, res) => {
         const filter = util.filter(req.params.filter)
-        const isolations = await isolationModel.find(filter, '-_id value date').sort({date: 'desc'}).exec();
-        const quarantines = await quarantineModel.find(filter, '-_id value date').sort({date: 'desc'}).exec();
-		res.send({isolations, quarantines});
+        const isolations = await isolationModel.find(filter, '-_id value date').sort({date: 'asc'}).exec();
+        const quarantines = await quarantineModel.find(filter, '-_id value date').sort({date: 'asc'}).exec();
+
+
+		res.send({success: true, message: "Residential Info Retrieved!", data: [quarantines, isolations]});
     });
 
 

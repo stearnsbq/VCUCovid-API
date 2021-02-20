@@ -76,40 +76,43 @@ db.on('open', console.log.bind(console, 'Connected to MongoDB instance'));
 
 
 
-/**
- * @swagger
- *
- * /api/v1:
- *   get:
- *     description: Get all of the data
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: all of the cases, tests, quarantines/isolations
- */
 
-app.get(api_ver, async (req, res) => {
-	const select = '-_id date value';
-	const positives = await positiveModel.find({}, select).sort({ date: 1 }).exec();
-	const negatives = await negativeModel.find({}, select).sort({ date: 1 }).exec();
-	const isolations = await isolationModel.find({}, select).sort({ date: 1 }).exec();
-	const quarantines = await quarantineModel.find({}, select).sort({ date: 1 }).exec();
-	const students = await studentModel.find({}, select).sort({ date: 1 }).exec();
-	const employees = await employeeModel.find({}, select).sort({ date: 1 }).exec();
-	const prevalenceNegative = await prevalenceNegativeModel.find({}, select).sort({ date: 1 }).exec();
-	const prevalencePositive = await prevalencePositiveModel.find({}, select).sort({ date: 1 }).exec();
+app.get(`${api_ver}lastUpdated`, async (req, res) => {
+	const select = '-_id date';
+	const isolations = await models.isolationModel.findOne({}, select).sort({ date: -1 }).exec();
 
-	res.send({
-		positives,
-		negatives,
-		isolations,
-		quarantines,
-		students,
-		employees,
-		prevalenceNegative,
-		prevalencePositive
-	});
+	res.send({success: true, message: "Last Updated Retireved", data: `${ isolations.date.getMonth() + 1}-${isolations.date.getDate() + 1}-${isolations.date.getFullYear()}`})
+})
+
+
+app.get(`${api_ver}totals`, async (req, res) => {
+	const select = '-_id value';
+	const isolations = await models.isolationModel.findOne({}, select).sort({ date: 1 }).exec();
+	const quarantines = await models.quarantineModel.findOne({}, select).sort({ date: 1 }).exec();
+	const students = await models.studentModel.findOne({}, select).sort({ date: 1 }).exec();
+	const employees = await models.employeeModel.findOne({}, select).sort({ date: 1 }).exec();
+	const symptomaticPositives = await models.symptomaticPositiveModel.findOne({}, select).sort({ date: 1 }).exec();
+	const symptomaticNegatives = await models.symptomaticNegativeModel.findOne({}, select).sort({ date: 1 }).exec();
+	const asymptomaticPositives = await models.asymptomaticPositiveModel.findOne({}, select).sort({ date: 1 }).exec();
+	const asymptomaticNegatives = await models.asymptomaticNegativeModel.findOne({}, select).sort({ date: 1 }).exec();
+	const entryTestPositives = await models.entryTestPositiveModel.findOne({}, select).sort({ date: 1 }).exec();
+	const entryTestNegatives = await models.entryTestNegativeModel.findOne({}, select).sort({ date: 1 }).exec();
+
+
+
+	res.send({success: true, message: "Totals Retrieved", data: {
+		studentsInIsolation: isolations.value,
+		studentsInQuarantine: quarantines.value,
+		studentCases: students.value,
+		employeeCases: employees.value,
+		symptomaticPositives: symptomaticPositives.value,
+		symptomaticNegatives: symptomaticNegatives.value,
+		asymptomaticPositives: asymptomaticPositives.value,
+		asymptomaticNegatives: asymptomaticNegatives.value,
+		entryTestPositives: entryTestPositives.value,
+		entryTestNegatives: entryTestNegatives.value
+
+	}});
 });
 
 scraper(models);
