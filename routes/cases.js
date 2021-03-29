@@ -21,7 +21,7 @@ module.exports = function(models) {
  */
 
 	router.get('/', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 
 		const students = await studentModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const employees = await employeeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
@@ -47,7 +47,7 @@ module.exports = function(models) {
  */
 
 	router.get('/employees', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const employees = await employeeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(employees);
@@ -71,7 +71,7 @@ module.exports = function(models) {
 
 	// get day by day history count of cases for students
 	router.get('/students', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const students = await studentModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(students);

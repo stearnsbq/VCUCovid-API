@@ -6,7 +6,7 @@ module.exports = function(models) {
 	const { entryTestPositiveModel, entryTestNegativeModel, symptomaticPositiveModel, symptomaticNegativeModel, asymptomaticPositiveModel, asymptomaticNegativeModel } = models;
 
 	router.get('/entry', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const entryTestPositive = await entryTestPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const entryTestNegative = await entryTestNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
@@ -14,14 +14,14 @@ module.exports = function(models) {
 	});
 
 	router.get('/symptomatic', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const symptomaticPositive = await symptomaticPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const symptomaticNegative = await symptomaticNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		res.send({success: true, message: "Symptomatic Results Retrieved", data: [ symptomaticPositive, symptomaticNegative ]});
 	});
 
 	router.get('/asymptomatic', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const asymptomaticPositive = await asymptomaticPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const asymptomaticNegative = await asymptomaticNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
@@ -29,7 +29,7 @@ module.exports = function(models) {
 	});
 
 	router.get('/', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const entryTestPositive = await entryTestPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const entryTestNegative = await entryTestNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 		const symptomaticPositive = await symptomaticPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
@@ -42,42 +42,42 @@ module.exports = function(models) {
 	});
 
 	router.get('/entryTestPositive', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const docs = await entryTestPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(docs);
 	});
 
 	router.get('/entryTestNegative', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const docs = await entryTestNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(docs);
 	});
 
 	router.get('/symptomaticPositive', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const docs = await symptomaticPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(docs);
 	});
 
 	router.get('/symptomaticNegative', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const docs = await symptomaticNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(docs);
 	});
 
 	router.get('/asymptomaticPositive', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const docs = await asymptomaticPositiveModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(docs);
 	});
 
 	router.get('/asymptomaticNegative', async (req, res) => {
-		const filter = util.filter(req.params.filter)
+		const filter = util.filter(req.query.filter)
 		const docs = await asymptomaticNegativeModel.find(filter, '-_id date value').sort({ type: 'desc' }).exec();
 
 		res.send(docs);

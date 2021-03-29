@@ -28,7 +28,7 @@ module.exports = async function(models) {
 
 	const wrapper = soup.find('div', 'gridwrapper');
 
-	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup); // save a history html file
+	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup.text); // save a history html file
 
 	const headers = wrapper.findAll('div', 'gridheader');
 
