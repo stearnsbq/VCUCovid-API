@@ -26,18 +26,18 @@ module.exports = async function(models) {
 
 	const date_str = moment(date).format('YYYY-MM-DD');
 
-	const wrapper = soup.find('div', 'gridwrapper');
+	const cards = soup.find('div', 'cwf-grid');
 
 	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup.text); // save a history html file
 
-	const headers = wrapper.findAll('div', 'gridheader');
-
 	// loop through grid headers to save needed information
 
-	for (const header of headers) {
-		const body = header.findNextSibling('div');
+	for (const card of cards.contents) {
+		
+		const body = card.find("div", "plugin-card__body")
 
-		let ul = body.find('ul');
+		
+		const header = card.first
 
 
 		try {
