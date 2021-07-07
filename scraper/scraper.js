@@ -26,18 +26,19 @@ module.exports = async function(models) {
 
 	const date_str = moment(date).format('YYYY-MM-DD');
 
-	const cards = soup.find('div', 'cwf-grid');
+	const cards = soup.find('div', 'cwf-grid').findAll("div", "plugin-card");
 
 	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup.text); // save a history html file
 
 	// loop through grid headers to save needed information
 
-	for (const card of cards.contents) {
+	for (const card of cards) {
 		
 		const body = card.find("div", "plugin-card__body")
 
-		
-		const header = card.first
+		const header = body.find("h2")
+
+		const ul = body.find("ul")
 
 
 		try {
@@ -58,7 +59,7 @@ module.exports = async function(models) {
 					scrape_asympomatic_tests({asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel}, ul, date_str)
 					break
 				}
-				case 'Entry testing':{
+				case 'Entry/exit testing':{
 					scrape_entry_tests({entryTestPositiveModel: models.entryTestPositiveModel, entryTestNegativeModel: models.entryTestNegativeModel}, ul, date_str)
 					break;
 				}
@@ -72,12 +73,13 @@ module.exports = async function(models) {
 
 	// because isolation and quarantines are seperate now we gotta do this
 
-	const isolationAndQuarantineHeader = wrapper.nextSibling;
-	const isolationAndQuarantineBody = isolationAndQuarantineHeader.nextElement;
+
+	const isolationCard = soup.find("div", {"id": "d.en.457867"})
+	const isolationCardBody = isolationCard.find("div", "plugin-card__body")
 
 	isolation_quarantines(
 			{ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel },
-			isolationAndQuarantineBody.nextElement.contents[0],
+			isolationCardBody.find("ul"),
 			date_str
 	);
 
