@@ -28,8 +28,6 @@ module.exports = async function(models) {
 
 	const cards = soup.find('div', 'cwf-grid').findAll("div", "plugin-card");
 
-	console.log(cards.length)
-
 	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup.text); // save a history html file
 
 	// loop through grid headers to save needed information
@@ -57,7 +55,7 @@ module.exports = async function(models) {
 					break
 				}
 				case 'Asymptomatic testing':{
-					scrape_asympomatic_tests({asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel}, body, date_str)
+					scrape_asympomatic_tests({asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel, entryTestPositiveModel: models.entryTestPositiveModel, entryTestNegativeModel: models.entryTestNegativeModel}, body, date_str)
 					break
 				}
 				case 'On-campus isolation and quarantine':{
@@ -65,7 +63,7 @@ module.exports = async function(models) {
 					break;
 				}
 
-				scrape_entry_tests
+
 
 			}
 		} catch (err) {
