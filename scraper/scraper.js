@@ -28,18 +28,19 @@ module.exports = async function(models) {
 
 	const cards = soup.find('div', 'cwf-grid').findAll("div", "plugin-card");
 
+	console.log(cards.length)
+
 	fs.writeFileSync(`${__dirname}/history/${date_str}.html`, soup.text); // save a history html file
 
 	// loop through grid headers to save needed information
 
 	for (const card of cards) {
-		
+
 		const body = card.find("div", "plugin-card__body")
 
 		const header = body.find("h2")
 
 		const ul = body.find("ul")
-
 
 		try {
 			switch (header.getText().replace(/&nbsp;/g, ' ')) {
@@ -55,14 +56,16 @@ module.exports = async function(models) {
 					scrape_sympomatic_tests({symptomaticPositiveModel: models.symptomaticPositiveModel, symptomaticNegativeModel: models.symptomaticNegativeModel}, ul, date_str)
 					break
 				}
-				case 'Asymptomatic surveillance testing':{
-					scrape_asympomatic_tests({asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel}, ul, date_str)
+				case 'Asymptomatic testing':{
+					scrape_asympomatic_tests({asymptomaticPositiveModel: models.asymptomaticPositiveModel, asymptomaticNegativeModel: models.asymptomaticNegativeModel}, body, date_str)
 					break
 				}
-				case 'Entry/exit testing':{
-					scrape_entry_tests({entryTestPositiveModel: models.entryTestPositiveModel, entryTestNegativeModel: models.entryTestNegativeModel}, ul, date_str)
+				case 'On-campus isolation and quarantine':{
+					isolation_quarantines({ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel }, ul, date_str);
 					break;
 				}
+
+				scrape_entry_tests
 
 			}
 		} catch (err) {
@@ -74,14 +77,6 @@ module.exports = async function(models) {
 	// because isolation and quarantines are seperate now we gotta do this
 
 
-	const isolationCard = soup.find("div", {"id": "d.en.457867"})
-	const isolationCardBody = isolationCard.find("div", "plugin-card__body")
-
-	isolation_quarantines(
-			{ isolationModel: models.isolationModel, quarantineModel: models.quarantineModel },
-			isolationCardBody.find("ul"),
-			date_str
-	);
 
 
 
